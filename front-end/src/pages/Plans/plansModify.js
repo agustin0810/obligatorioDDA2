@@ -20,7 +20,6 @@ export const PlansModify = () =>{
     const [errorT, setErrorT] = useState("");
     const [alerta, setAlerta] = useState(false);
     const [plan, setPlan] = useState(null);
-    const [value, setValue] = React.useState(null);
 
     const { id } = useParams()
     useEffect(() => {
@@ -67,7 +66,10 @@ export const PlansModify = () =>{
             setErrorT("Error: el costo debe ser un valor entero")
             return false
         }
-
+        else if(modality!="aérea" && modality!="marítima" &&modality!="terrestre"){
+            setErrorT("La modalidad debe ser aérea, marítima o terrestre")
+            return false
+        }
         return true;
     }
 
@@ -122,9 +124,9 @@ export const PlansModify = () =>{
                 <LocalizationProvider dateAdapter={AdapterDayjs} >
                 <DatePicker
                     label="Fecha del viaje"
-                    value={value}
+                    value={date}
                     onChange={(newValue) => {
-                    setValue(newValue);
+                    setDate(newValue);
                     }}
                     renderInput={(params) => <TextField 
                         style={{width: '40vmin'}} {...params} />}

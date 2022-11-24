@@ -3,10 +3,10 @@ import '../../styles/forms.css'
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
+import Button from '@mui/material/Button'
 
 export const PlansList = () =>{
     const [planes, setPlanes] = React.useState([]);
-
     function listPlans(){
         fetch('localhost:5000/plans')
         .then(data => {
@@ -15,6 +15,9 @@ export const PlansList = () =>{
         .then(plan => {
             planes.push(plan)
         });
+    }
+    function goToImages(id){
+        window.location.assign("/planImages/"+id)
     }
 
     React.useEffect(() => {
@@ -28,6 +31,7 @@ export const PlansList = () =>{
                 {planes.length!=0 ? 
                 <div className="gridList">
                     <List className="itemsList">
+                        
                     {planes.map((aPlan, i) => { 
                         return(
 
@@ -36,6 +40,7 @@ export const PlansList = () =>{
                             <ListItemText style={{wordWrap: 'break-word'}} 
                             primary={aPlan.id + ", " + aPlan.destiny + ", " + aPlan.date + ", " + aPlan.modality + ", "+ aPlan.cost}
                             />
+                            <Button id={aPlan.id} onClick={(e)=>goToImages(e.target.id)}>Ir a imágenes</Button>
                             </ListItem>
 
 

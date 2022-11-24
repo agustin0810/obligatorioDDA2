@@ -25,6 +25,7 @@ import {PlansModify} from '../pages/Plans/plansModify';
 //Extras
 import {CompraViaje} from '../pages/Extras/compraViaje'
 import {Listing} from '../pages/Extras/listing'
+import {PlanImages} from '../pages/Plans/planImages'
 
 function AppRoutes(){
     return(
@@ -49,6 +50,7 @@ function AppRoutes(){
 
         <Route path="/compraViaje" element={<CompraViaje />} />
         <Route path="/listing" element={<Listing />} />
+        <Route path="/planImages/:id" element={<PlanImages />} />
 
         </Routes>
       </div>

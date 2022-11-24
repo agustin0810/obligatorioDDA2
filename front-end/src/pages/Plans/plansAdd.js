@@ -19,7 +19,6 @@ export const PlansAdd = () =>{
     const [pictures, setPictures] = useState([]);
     const [errorT, setErrorT] = useState("");
     const [alerta, setAlerta] = useState(false);
-    const [value, setValue] = React.useState(null);
 
     function selectImgs(){
         const fileInput = document.querySelector('#inputFile');
@@ -59,15 +58,19 @@ export const PlansAdd = () =>{
             return false;
         }
         else if((destiny.length>20)){
-            setErrorT("Error: ingrese destino válido (no más de 20 dígitos)")
+            setErrorT("Ingrese destino válido (no más de 20 dígitos)")
             return false
         }
         else if(date<Date.now){
-            setErrorT("Error: Ingrese una fecha mayor o igual a hoy")
+            setErrorT("Ingrese una fecha mayor o igual a hoy")
             return false
         }
         else if(!cost.match(/^\d+$/)){
-            setErrorT("Error: el costo debe ser un valor entero")
+            setErrorT("El costo debe ser un valor entero")
+            return false
+        }
+        else if(modality!="aérea" && modality!="marítima" &&modality!="terrestre"){
+            setErrorT("La modalidad debe ser aérea, marítima o terrestre")
             return false
         }
 
@@ -139,9 +142,9 @@ export const PlansAdd = () =>{
                 <LocalizationProvider dateAdapter={AdapterDayjs} >
                 <DatePicker
                     label="Fecha del viaje"
-                    value={value}
+                    value={date}
                     onChange={(newValue) => {
-                    setValue(newValue);
+                    setDate(newValue);
                     }}
                     renderInput={(params) => <TextField 
                         style={{width: '40vmin'}} {...params} />}

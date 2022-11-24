@@ -1,14 +1,3 @@
-** Pendientes luego de ABM **
-Asociar cliente a plan de viaje (desde planes de viaje)
-
-Listados extras:
-
-* Listar los planes para un cliente (desde planes, todos los attr)
-* Listar el primer viaje que tendrá un cliente desp de fecha.
-
----------------------------------------------------------------------------
-
 ** Pendientes no prioritarios **
-Ver fotos de planes en listado, borrado y modificar
 Modificar fotos de planes
-Clientes Standard y Premium (reflejados en los precios de las asociaciones)
+select list en seleccion de modalidad (plan)
