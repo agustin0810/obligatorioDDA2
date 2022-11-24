@@ -1,18 +1,24 @@
 html, body {
+    text-align: center;
+    background-color: #fcfcfc88;
+    background-image: url('../images/logo.png');
+    background-size: 4%;
+  
+    background-repeat: repeat;
     height: 100%;
 }
 .App{
     padding-left: 0;
     padding-right: 0;
     padding-bottom: 0;
-    height: 100%;
     position: absolute;
     width: 100%;
+    height: 100%;
 }
 .formContainer{
     padding-top: 10vmin;
     background-color: white;
-    height: 80%;
+    min-height: 80%;
     width: 60%;
     position: relative;
     margin: auto;
@@ -22,5 +28,31 @@ html, body {
     flex-direction: column;
 }
 .textField{
-    width: 20px;
+    width: 40px;
+}
+.alert{
+    width: 30vmin;
+    position: relative;
+    margin: auto;
+    margin-top: 10vmin;
+}
+.itemsList{
+    left: 10%;
+    width: 80%;
+    background-color: rgba(238, 238, 238, 0.747);
+    padding: 2vmin;
+    border-radius: 2vmin;
+    min-height: 90%;
+}
+.gridList{
+    text-align: center;
+    height: 100%;
+    
+}
+.itemList{
+    min-height: 100px;
+    overflow: initial;
+    margin-top: 1%;
+    background-color: rgb(218, 218, 218);
+    border-radius: 2vmin;
 }

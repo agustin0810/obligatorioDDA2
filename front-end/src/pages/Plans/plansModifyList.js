@@ -4,54 +4,43 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import IconButton from '@mui/material/IconButton';
-import DeleteIcon from '@mui/icons-material/Delete';
-import Alert from '@mui/material/Alert'
+import BorderColor from '@mui/icons-material/BorderColor';
 
-export const PlansDel = () =>{
-    const [plans, setPlans] = React.useState([]);
-    const [planId, setPlanId] = React.useState(null);
-    const [alerta, setAlerta] = React.useState(false);
-
+export const PlansModifyList = () =>{
+    const [planes, setPlanes] = React.useState([]);
     
-    function deletePlan(aPlanId){
-        const apiCall = async () => {
-            const response = await fetch('http://localhost:5000/plans/delete/'+aPlanId, {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        }).then(response => response.status==200?setAlerta(true): null)
+    function goToPlan(id){
+        window.location.href('/planes/modifyPlan/'+id)
     }
-    }
+
     function listPlans(){
         fetch('localhost:5000/plans')
         .then(data => {
             return data.json();
         })
         .then(plan => {
-            plans.push(plan)
+            planes.push(plan)
         });
     }
 
     React.useEffect(() => {
       listPlans()
     }, [])
-    
 
     return(
         <div className="App">
-            <h1> Baja de planes </h1>
+            <h1> Modificar plan </h1>
             <div className="formContainer" >
-                {plans.length!=0 ? 
+                {planes.length!=0 ? 
                 <div className="gridList">
                     <List className="itemsList">
-                    {plans.map((aPlan, i) => { 
+                    {planes.map((aPlan, i) => { 
                         return(
 
                             <ListItem className="itemList"
                             secondaryAction={
-                                <IconButton edge="end" aria-label="delete" id={aPlan.id} onClick={(e) => deletePlan(e.target.id)}>
-                                <DeleteIcon />
+                                <IconButton edge="end" aria-label="delete" id={aPlan.id} onClick={(e) => goToPlan(e.target.id)}>
+                                <BorderColor />
                                 </IconButton>
                             }
                             >
@@ -59,15 +48,13 @@ export const PlansDel = () =>{
                             primary={aPlan.id + ", " + aPlan.destiny + ", " + aPlan.date + ", " + aPlan.modality + ", "+ aPlan.cost}
                             />
                             </ListItem>
-    
+
 
                         )
-                     })}
-                    </List> 
-                    
+                    })}
+                    </List>
                 </div>
-            : <h1>No hay planes ingresados</h1>}
-                {alerta!=false ? <Alert severity="success" className="alert">{"Baja realizada con éxito"}</Alert>: ""}
+                    : <h1>No hay planes ingresados</h1>}
 
             </div>
         </div>

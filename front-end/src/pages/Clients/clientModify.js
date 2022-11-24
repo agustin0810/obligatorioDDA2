@@ -6,8 +6,9 @@ import Box from '@mui/material/Box';
 import '../../styles/general.css';
 import '../../styles/forms.css';
 import { useState, useEffect } from 'react';
+import { useParams } from "react-router-dom"
 
-export const ClientsAdd = () =>{
+export const ClientsModify = () =>{
 
     const [name, setName] = useState(null);
     const [lastname, setLastName] = useState(null);
@@ -15,7 +16,20 @@ export const ClientsAdd = () =>{
     const [ci, setCI] = useState(null);
     const [errorT, setErrorT] = useState("");
     const [alerta, setAlerta] = useState(false);
+    const [cliente, setCliente] = useState(null);
 
+    const { id } = useParams()
+    console.log(id)
+    useEffect(() => {
+        fetch('localhost:5000/clients/'+id)
+        .then(data => {
+            return data.json();
+        })
+        .then(client => {
+            setCliente(client)
+        });
+    }, [])
+    
     function checkFields(){
 
         //Errores de filling
@@ -60,7 +74,7 @@ export const ClientsAdd = () =>{
     function handleSubmit(){
         if(checkFields()){
             const apiCall = async () => {
-                    const response = await fetch('http://localhost:5000/clients/add', {
+                const response = await fetch('http://localhost:5000/clients/modify', {
                   method: 'POST',
                   body: {"ci": ci, "name": name, "lastname": lastname, "email": email},
                   headers: {
@@ -72,8 +86,10 @@ export const ClientsAdd = () =>{
     }
     return(
         <div className="App">
-            <h1> Alta de clientes </h1>
+            <h1> Modificación de clientes </h1>
             <div className="formContainer" >
+            {console.log(cliente)}
+            {cliente!=null ? 
             <Box
             component="form"
             sx={{
@@ -88,6 +104,7 @@ export const ClientsAdd = () =>{
                 id="ci"
                 label="Cédula de Identidad"
                 style={{width: '40vmin'}}
+                value={cliente.ci}
                 onChange={(e)=>setCI(e.target.value)}
                 />
                 <TextField
@@ -95,6 +112,7 @@ export const ClientsAdd = () =>{
                 id="name"
                 label="Nombre"
                 style={{width: '40vmin'}}
+                value={cliente.name}
                 onChange={(e)=>setName(e.target.value)}
                 />
                 <TextField
@@ -102,6 +120,7 @@ export const ClientsAdd = () =>{
                 id="lastname"
                 label="Apellido"
                 style={{width: '40vmin'}}
+                value={cliente.lastname}
                 onChange={(e)=>setLastName(e.target.value)}
                 />
                 <TextField
@@ -109,6 +128,7 @@ export const ClientsAdd = () =>{
                 id="email"
                 label="Email"
                 style={{width: '40vmin'}}
+                value={cliente.email}
                 onChange={(e)=>setEmail(e.target.value)}
                 />
             </div>
@@ -118,8 +138,9 @@ export const ClientsAdd = () =>{
             </div>
             {/*Manejo de errores FRONT-END*/}
             {errorT!="" ? <Alert severity="error" className="alert">{"Error: " +errorT}</Alert>: ""}
-            {alerta!=false ? <Alert severity="success" className="alert">{"Alta realizada con éxito"}</Alert>: ""}
+            {alerta!=false ? <Alert severity="success" className="alert">{"Modificación realizada con éxito"}</Alert>: ""}
             </Box>
+            : <h1>No se encontró el cliente</h1>}
 
             </div>
         </div>

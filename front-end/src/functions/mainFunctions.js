@@ -34,3 +34,11 @@ export function GoPlansList() {
   window.location.href = '/planesdeviaje/list';
 }
 
+//---------------------------------------------------
+//Routes functions extras
+export function GoPlansPurchasing(){
+  window.location.href = '/compraViaje'
+}
+export function GoListing(){
+  window.location.href = '/listing'
+}
