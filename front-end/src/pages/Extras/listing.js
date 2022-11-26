@@ -23,25 +23,27 @@ export const Listing = () =>{
     const [planes, setPlanes] = React.useState([]);
     
     function listClients(){
-        fetch('localhost:5000/clients')
+        fetch('localhost:8080/clients')
         .then(data => {
             return data.json();
         })
         .then(client => {
             clientes.push(client)
-        });
+        })
+        .catch(error => setErrorT(error.errorMsg))
     }
     function goToImages(id){
         window.location.assign("/planImages/"+id)
     }
     function handleSubmit(){
-        fetch('localhost:5000/plans' + new URLSearchParams({selectedClientCi: selectedClientCI, selectedDate: date}))
+        fetch('localhost:8080/plans?' + new URLSearchParams({selectedClientCi: selectedClientCI, selectedDate: date}))
         .then(data => {
             return data.json();
         })
         .then(plan => {
             planes.push(plan)
-        });
+        })
+        .catch(error => setErrorT(error.errorMsg))
     }
     
     React.useEffect(() => {

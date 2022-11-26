@@ -17,15 +17,17 @@ import '../../styles/forms.css';
 export const PlanImages = () =>{
     const [images, setImages] = useState([])
     const { id } = useParams()
+    const [errorT, setErrorT] = React.useState("");
 
     const getImages =()=>{
-        fetch('localhost:5000/images/'+id)
+        fetch('localhost:8080/images/'+id)
         .then(data => {
             return data.json();
         })
         .then(image => {
             setImages(image)
-        });
+        })
+        .catch(error => setErrorT(error.errorMsg))
     }
     useEffect(() => {
       getImages()

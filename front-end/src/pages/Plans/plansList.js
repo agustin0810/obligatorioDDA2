@@ -7,14 +7,16 @@ import Button from '@mui/material/Button'
 
 export const PlansList = () =>{
     const [planes, setPlanes] = React.useState([]);
+    const [errorT, setErrorT] = React.useState("");
     function listPlans(){
-        fetch('localhost:5000/plans')
+        fetch('localhost:8080/plans')
         .then(data => {
             return data.json();
         })
         .then(plan => {
             planes.push(plan)
-        });
+        })
+        .catch(error => setErrorT(error.errorMsg))
     }
     function goToImages(id){
         window.location.assign("/planImages/"+id)

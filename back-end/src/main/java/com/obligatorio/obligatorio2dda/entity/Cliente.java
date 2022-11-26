@@ -21,7 +21,7 @@ public class Cliente implements Serializable{
     private String name;
 
     @Column(name = "lastname", length =30)
-    private String lastName;
+    private String lastname;
 
     @Column(name = "email", length =30)
     private String email;
@@ -32,10 +32,10 @@ public class Cliente implements Serializable{
     public Cliente(){
         
     }
-    public Cliente(Long ci, String name, String lastName, String email, Tipo tipo) {
+    public Cliente(Long ci, String name, String lastname, String email, Tipo tipo) {
         this.ci = ci;
         this.name = name;
-        this.lastName = lastName;
+        this.lastname = lastname;
         this.email = email;
         this.tipo = tipo;
     }
@@ -57,11 +57,11 @@ public class Cliente implements Serializable{
     }
 
     public String getLastName() {
-        return lastName;
+        return lastname;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setLastName(String lastname) {
+        this.lastname = lastname;
     }
 
     public String getEmail() {

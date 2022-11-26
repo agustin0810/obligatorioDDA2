@@ -37,8 +37,19 @@ public class ClienteServiceImpl implements ClienteService{
 
     @Override
     @Transactional
-    public void deleteById(Long Id) {
-        clienteRepository.deleteById(Id);
+    public void deleteById(int ci) {
+        clienteRepository.deleteById(Long.valueOf(ci));  
+    }
+    @Override
+    @Transactional
+    public String checkRepeated(int ci) {
+        int selectedCIs = clienteRepository.selectCIsCount(ci);
+        if(selectedCIs==0){
+            return "false";
+        }
+        else{
+            return "true";
+        }
         
     }
     

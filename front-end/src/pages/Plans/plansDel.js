@@ -11,26 +11,29 @@ export const PlansDel = () =>{
     const [plans, setPlans] = React.useState([]);
     const [planId, setPlanId] = React.useState(null);
     const [alerta, setAlerta] = React.useState(false);
+    const [errorT, setErrorT] = React.useState("");
 
     
     function deletePlan(aPlanId){
         const apiCall = async () => {
-            const response = await fetch('http://localhost:5000/plans/delete/'+aPlanId, {
+            const response = await fetch('http://localhost:8080/plans/delete/'+aPlanId, {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json'
           }
         }).then(response => response.status==200?setAlerta(true): null)
+        .catch(error => setErrorT(error.errorMsg))
     }
     }
     function listPlans(){
-        fetch('localhost:5000/plans')
+        fetch('localhost:8080/plans')
         .then(data => {
             return data.json();
         })
         .then(plan => {
             plans.push(plan)
-        });
+        })
+        .catch(error => setErrorT(error.errorMsg))
     }
 
     React.useEffect(() => {
@@ -50,7 +53,7 @@ export const PlansDel = () =>{
 
                             <ListItem className="itemList"
                             secondaryAction={
-                                <IconButton edge="end" aria-label="delete" id={aPlan.id} onClick={(e) => deletePlan(e.target.id)}>
+                                <IconButton aria-label="delete" id={aPlan.id} onClick={(e) => deletePlan(e.target.id)}>
                                 <DeleteIcon />
                                 </IconButton>
                             }

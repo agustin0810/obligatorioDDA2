@@ -9,28 +9,31 @@ import Alert from '@mui/material/Alert'
 
 export const ClientsDel = () =>{
     const [clientes, setClientes] = React.useState([]);
-    const [clientId, setClientId] = React.useState(null);
     const [alerta, setAlerta] = React.useState(false);
+    const [errorT, setErrorT] = React.useState("");
 
-    
-    function deleteClient(aClientId){
-        const apiCall = async () => {
-            const response = await fetch('http://localhost:5000/clients/delete/'+aClientId, {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        }).then(response => response.status==200?setAlerta(true): null)
-    }
-    }
-    function listClients(){
-        fetch('localhost:5000/clients')
-        .then(data => {
-            return data.json();
+    function deleteClient(aClientId) {
+        console.log(aClientId)
+        fetch('http://localhost:8080/clients/delete?ci='+aClientId, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json', 
+          },
+        }).then(response =>{
+            if(response.status==200){
+                setAlerta(true)
+                listClients()
+            }
         })
-        .then(client => {
-            clientes.push(client)
-        });
+        .catch(error => setErrorT(error.errorMsg))
+    }
+    
+    function listClients(){
+        fetch('http://localhost:8080/clients')
+        .then(response => response.json())
+        .then(data => setClientes(data))
+        .catch(error => setErrorT(error.errorMsg))
+    
     }
 
     React.useEffect(() => {
@@ -50,13 +53,14 @@ export const ClientsDel = () =>{
 
                             <ListItem className="itemList"
                             secondaryAction={
-                                <IconButton edge="end" aria-label="delete" id={aClient.id} onClick={(e) => deleteClient(e.target.id)}>
+                                <IconButton aria-label="delete" onClick={(e) => deleteClient(aClient.ci)}>
                                 <DeleteIcon />
                                 </IconButton>
                             }
+                            key={aClient.ci}
                             >
                             <ListItemText style={{wordWrap: 'break-word'}} 
-                            primary={aClient.id + ", " + aClient.ci + ", " + aClient.name + ", " + aClient.lastname + ", "+ aClient.email}
+                            primary={aClient.ci + ", " + aClient.name + ", " + aClient.lastName + ", "+ aClient.email + ", " + aClient.tipo }
                             />
                             </ListItem>
     

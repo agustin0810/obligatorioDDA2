@@ -8,19 +8,21 @@ import BorderColor from '@mui/icons-material/BorderColor';
 
 export const PlansModifyList = () =>{
     const [planes, setPlanes] = React.useState([]);
+    const [errorT, setErrorT] = React.useState("");
     
     function goToPlan(id){
         window.location.href('/planes/modifyPlan/'+id)
     }
 
     function listPlans(){
-        fetch('localhost:5000/plans')
+        fetch('localhost:8080/plans')
         .then(data => {
             return data.json();
         })
         .then(plan => {
             planes.push(plan)
-        });
+        })
+        .catch(error => setErrorT(error.errorMsg))
     }
 
     React.useEffect(() => {
@@ -39,7 +41,7 @@ export const PlansModifyList = () =>{
 
                             <ListItem className="itemList"
                             secondaryAction={
-                                <IconButton edge="end" aria-label="delete" id={aPlan.id} onClick={(e) => goToPlan(e.target.id)}>
+                                <IconButton aria-label="delete" id={aPlan.id} onClick={(e) => goToPlan(e.target.id)}>
                                 <BorderColor />
                                 </IconButton>
                             }

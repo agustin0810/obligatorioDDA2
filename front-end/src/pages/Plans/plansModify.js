@@ -23,13 +23,14 @@ export const PlansModify = () =>{
 
     const { id } = useParams()
     useEffect(() => {
-        fetch('localhost:5000/plans/'+id)
+        fetch('localhost:8080/plans/'+id)
         .then(data => {
             return data.json();
         })
         .then(plan => {
             setPlan(plan)
-        });
+        })
+        .catch(error => setErrorT(error.errorMsg))
     }, [])
     
     function checkFields(){
@@ -76,13 +77,14 @@ export const PlansModify = () =>{
     function handleSubmit(){
         if(checkFields()){
             const apiCall = async () => {
-                const response = await fetch('http://localhost:5000/plans/modify', {
+                const response = await fetch('http://localhost:8080/plans/modify', {
                   method: 'POST',
                   body: {"destiny": destiny, "date": date, "modality": modality, "cost": cost, "pictures": pictures},
                   headers: {
                     'Content-Type': 'application/json'
                   }
                 }).then(response => response.status==200?setAlerta(true): null)
+                .catch(error => setErrorT(error.errorMsg))
             }
         }
     }

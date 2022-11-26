@@ -79,7 +79,7 @@ export const PlansAdd = () =>{
     function handleSubmit(){
         if(checkFields()){
             const apiCall = async () => {
-                    const response = await fetch('http://localhost:5000/plans/add', {
+                    const response = await fetch('http://localhost:8080/plans/add', {
                   method: 'POST',
                   body: {"destiny": destiny, "date": date, "modality": modality, "cost": cost, "pictures": pictures},
                   headers: {
@@ -87,7 +87,7 @@ export const PlansAdd = () =>{
                   }
                 }).then(response => response.json())
                 .then(plan => plan!=null ?uploadImages(plan.id): setErrorT("No se pudo realizar el alta"))
-
+                .catch(error => setErrorT(error.errorMsg))
 
             }
         }
@@ -99,10 +99,11 @@ export const PlansAdd = () =>{
             formData.append("file"+i, pictures[i])
         }
         const uploadCall = async () => {
-            const response = await fetch('http://localhost:5000/images/add', {
+            const response = await fetch('http://localhost:8080/images/add', {
           method: 'POST',
           body: {formData}
         }).then(response => response.status==200?setAlerta(true): null)
+        .catch(error => setErrorT(error.errorMsg))
         }
     }
     return(

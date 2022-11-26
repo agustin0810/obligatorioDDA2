@@ -24,7 +24,7 @@ export const CompraViaje = () =>{
         if(selectedPlanID!=null && selectedClientCI!=null){
             
         const apiCall = async () => {
-            const response = await fetch('http://localhost:5000/clients/getFinalCost', {
+            const response = await fetch('http://localhost:8080/clients/getFinalCost', {
           method: 'POST',
           body: {"ci": selectedClientCI, "planId": selectedPlanID},
           headers: {
@@ -32,27 +32,30 @@ export const CompraViaje = () =>{
           }
         }).then(response => response.json())
         .then(plan => plan!=null? setFinalCost(plan.cost): setErrorT("No se encontró el costo"))
+        .catch(error => setErrorT(error.errorMsg))
         
         }
     }
     }
     function listClients(){
-        fetch('localhost:5000/clients')
+        fetch('localhost:8080/clients')
         .then(data => {
             return data.json();
         })
         .then(client => {
             clientes.push(client)
-        });
+        })
+        .catch(error => setErrorT(error.errorMsg))
     }
     function listPlans(){
-        fetch('localhost:5000/plans')
+        fetch('localhost:8080/plans')
         .then(data => {
             return data.json();
         })
         .then(plan => {
             planes.push(plan)
-        });
+        })
+        .catch(error => setErrorT(error.errorMsg))
     }
 
     React.useEffect(() => {
@@ -70,13 +73,14 @@ export const CompraViaje = () =>{
     function handleSubmit(){
         if(checkFields()){
             const apiCall = async () => {
-                    const response = await fetch('http://localhost:5000/purchase/add', {
+                    const response = await fetch('http://localhost:8080/purchase/add', {
                   method: 'POST',
                   body: {"ci": selectedClientCI, "planID": selectedPlanID, "cost": finalCost},
                   headers: {
                     'Content-Type': 'application/json'
                   }
                 }).then(response => response.status==200?setAlerta(true): null)
+                .catch(error => setErrorT(error.errorMsg))
             }
         }
     }
