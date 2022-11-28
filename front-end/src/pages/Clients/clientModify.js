@@ -39,7 +39,7 @@ export const ClientModify = () =>{
             setTipo(client.tipo)
             setCI(client.ci)
         })
-        .catch(error => setErrorT(error.errorMsg))
+        .catch(error => setErrorT(error))
     }, [])
     
     function checkFields(){
@@ -93,7 +93,7 @@ export const ClientModify = () =>{
                     'Content-Type': 'application/json'
                 }
             }).then(response => response.status==200?setAlerta(true): null)
-            .catch(error => setErrorT(error.errorMsg))
+            .catch(error => setErrorT(error))
             
         }
     }

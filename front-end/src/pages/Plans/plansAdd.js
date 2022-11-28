@@ -9,6 +9,8 @@ import { useState, useEffect } from 'react';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import FileBase64 from 'react-file-base64';
+
 
 
 export const PlansAdd = () =>{
@@ -69,7 +71,8 @@ export const PlansAdd = () =>{
             setErrorT("El costo debe ser un valor entero")
             return false
         }
-        else if(modality!="aérea" && modality!="marítima" &&modality!="terrestre"){
+        else if(modality!="AEREA" && modality!="MARITIMA" && modality!="TERRESTRE"){
+            console.log("entro")
             setErrorT("La modalidad debe ser aérea, marítima o terrestre")
             return false
         }
@@ -78,33 +81,34 @@ export const PlansAdd = () =>{
     }
     function handleSubmit(){
         if(checkFields()){
-            const apiCall = async () => {
-                    const response = await fetch('http://localhost:8080/plans/add', {
+            console.log(pictures)
+                fetch('http://localhost:8080/plans/add', {
                   method: 'POST',
-                  body: {"destiny": destiny, "date": date, "modality": modality, "cost": cost, "pictures": pictures},
+                  body: JSON.stringify({destiny: destiny, date: date, modality: modality, cost: cost}),
                   headers: {
                     'Content-Type': 'application/json'
                   }
                 }).then(response => response.json())
-                .then(plan => plan!=null ?uploadImages(plan.id): setErrorT("No se pudo realizar el alta"))
-                .catch(error => setErrorT(error.errorMsg))
+                .then(plan=>uploadImages(plan.id))
+                //.then(plan => plan!=null ?uploadImages(plan.id): setErrorT("No se pudo realizar el alta"))
+                .catch(error => setErrorT(error))
 
-            }
         }
     }
     function uploadImages(planId){
-        const formData = new FormData();
-        formData.append("planId", planId)
         for(var i =0; i<pictures.length; i++){
-            formData.append("file"+i, pictures[i])
+
+            console.log(pictures[i].base64)
+            fetch('http://localhost:8080/images/add?planId='+planId, {
+              method: 'POST',
+              body: JSON.stringify({imageData: pictures[i].base64}),
+              headers: {
+                'Content-Type': 'application/json'
+              }
+            }).then(response => response.status==200?setAlerta(true): null)
+            .catch(error => setErrorT(error))
         }
-        const uploadCall = async () => {
-            const response = await fetch('http://localhost:8080/images/add', {
-          method: 'POST',
-          body: {formData}
-        }).then(response => response.status==200?setAlerta(true): null)
-        .catch(error => setErrorT(error.errorMsg))
-        }
+        
     }
     return(
         <div className="App">
@@ -153,19 +157,11 @@ export const PlansAdd = () =>{
                 </LocalizationProvider>
             </div>
             <div>
-                <Button
-                    variant="contained"
-                    component="label"
-                    >
-                    Subir fotos
-                    <input
-                        id="inputFile"
-                        type="file"
-                        hidden
-                        multiple
-                        onChange={selectImgs}
-                    />
-                </Button>
+                <FileBase64
+                multiple={ true }
+                hidden
+                id="inputFile"
+                onDone={ setPictures.bind(this) } />
             </div>
             <div>
                 <Button variant="outlined" color="success" className="addBtn" style={{top: '5vmin'}} onClick={handleSubmit}>Agregar</Button>            

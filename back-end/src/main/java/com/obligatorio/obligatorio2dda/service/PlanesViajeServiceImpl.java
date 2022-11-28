@@ -23,7 +23,7 @@ public class PlanesViajeServiceImpl implements PlanesViajeService{
 
     @Override
     @Transactional(readOnly=true)
-    public Optional<PlanesViaje> findById(Long Id) {
+    public Optional<PlanesViaje> findById(int Id) {
         // TODO Auto-generated method stub
         return planesViajeRepository.findById(Id);
     }
@@ -37,7 +37,7 @@ public class PlanesViajeServiceImpl implements PlanesViajeService{
 
     @Override
     @Transactional
-    public void deleteById(Long Id) {
+    public void deleteById(int Id) {
         planesViajeRepository.deleteById(Id);
         
     }

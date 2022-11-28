@@ -32,7 +32,7 @@ export const CompraViaje = () =>{
           }
         }).then(response => response.json())
         .then(plan => plan!=null? setFinalCost(plan.cost): setErrorT("No se encontró el costo"))
-        .catch(error => setErrorT(error.errorMsg))
+        .catch(error => setErrorT(error))
         
         }
     }
@@ -45,7 +45,7 @@ export const CompraViaje = () =>{
         .then(client => {
             clientes.push(client)
         })
-        .catch(error => setErrorT(error.errorMsg))
+        .catch(error => setErrorT(error))
     }
     function listPlans(){
         fetch('localhost:8080/plans')
@@ -55,7 +55,7 @@ export const CompraViaje = () =>{
         .then(plan => {
             planes.push(plan)
         })
-        .catch(error => setErrorT(error.errorMsg))
+        .catch(error => setErrorT(error))
     }
 
     React.useEffect(() => {
@@ -80,7 +80,7 @@ export const CompraViaje = () =>{
                     'Content-Type': 'application/json'
                   }
                 }).then(response => response.status==200?setAlerta(true): null)
-                .catch(error => setErrorT(error.errorMsg))
+                .catch(error => setErrorT(error))
             }
         }
     }

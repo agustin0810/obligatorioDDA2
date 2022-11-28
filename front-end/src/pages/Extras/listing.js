@@ -30,7 +30,7 @@ export const Listing = () =>{
         .then(client => {
             clientes.push(client)
         })
-        .catch(error => setErrorT(error.errorMsg))
+        .catch(error => setErrorT(error))
     }
     function goToImages(id){
         window.location.assign("/planImages/"+id)
@@ -43,7 +43,7 @@ export const Listing = () =>{
         .then(plan => {
             planes.push(plan)
         })
-        .catch(error => setErrorT(error.errorMsg))
+        .catch(error => setErrorT(error))
     }
     
     React.useEffect(() => {

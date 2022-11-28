@@ -11,18 +11,14 @@ export const PlansModifyList = () =>{
     const [errorT, setErrorT] = React.useState("");
     
     function goToPlan(id){
-        window.location.href('/planes/modifyPlan/'+id)
+        window.location.href='/planesdeviaje/modifyPlan/'+id
     }
 
     function listPlans(){
-        fetch('localhost:8080/plans')
-        .then(data => {
-            return data.json();
-        })
-        .then(plan => {
-            planes.push(plan)
-        })
-        .catch(error => setErrorT(error.errorMsg))
+        fetch('http://localhost:8080/plans')
+        .then(response => response.json())
+        .then(data => setPlanes(data))
+        .catch(error => setErrorT(error))
     }
 
     React.useEffect(() => {
@@ -41,7 +37,7 @@ export const PlansModifyList = () =>{
 
                             <ListItem className="itemList"
                             secondaryAction={
-                                <IconButton aria-label="delete" id={aPlan.id} onClick={(e) => goToPlan(e.target.id)}>
+                                <IconButton aria-label="delete" id={aPlan.id} onClick={(e) => goToPlan(aPlan.id)}>
                                 <BorderColor />
                                 </IconButton>
                             }

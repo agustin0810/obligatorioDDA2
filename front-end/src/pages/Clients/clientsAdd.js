@@ -90,7 +90,7 @@ export const ClientsAdd = () =>{
                     'Content-Type': 'application/json', 
                   },
                 }).then(response => response.status==200?setAlerta(true): null)
-                .catch(error => setErrorT(error.errorMsg))
+                .catch(error => setErrorT(error))
 
     }
     return(

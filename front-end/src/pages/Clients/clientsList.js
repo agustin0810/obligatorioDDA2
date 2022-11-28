@@ -14,7 +14,7 @@ export const ClientsList = () =>{
         fetch('http://localhost:8080/clients')
         .then(response => response.json())
         .then(data => setClientes(data))
-        .catch(error => setErrorT(error.errorMsg))
+        .catch(error => setErrorT(error))
     
     }
 

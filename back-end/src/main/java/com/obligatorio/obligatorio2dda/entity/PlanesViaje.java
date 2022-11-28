@@ -1,13 +1,15 @@
 package com.obligatorio.obligatorio2dda.entity;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.ArrayList;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -17,6 +19,7 @@ public class PlanesViaje implements Serializable{
     
     @Id
     @Column(name = "id", length = 20)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private int id;
 
     public int getId() {
@@ -40,7 +43,7 @@ public class PlanesViaje implements Serializable{
     private Double cost;
 
     @Column(name = "pictures", length = 20)
-    private ArrayList pictures;
+    private ArrayList<Image> pictures;
 
     public String getDestiny() {
         return destiny;
@@ -74,18 +77,18 @@ public class PlanesViaje implements Serializable{
         this.cost = cost;
     }
 
-    public ArrayList getPictures() {
+    public ArrayList<Image> getPictures() {
         return pictures;
     }
 
-    public void setPictures(ArrayList pictures) {
+    public void setPictures(ArrayList<Image> pictures) {
         this.pictures = pictures;
     }
 
     public PlanesViaje() {
     }
 
-    public PlanesViaje(int id, String destiny, Date date, ModalityType modality, Double cost, ArrayList pictures) {
+    public PlanesViaje(int id, String destiny, Date date, ModalityType modality, Double cost, ArrayList<Image> pictures) {
         this.id = id;
         this.destiny = destiny;
         this.date = date;
