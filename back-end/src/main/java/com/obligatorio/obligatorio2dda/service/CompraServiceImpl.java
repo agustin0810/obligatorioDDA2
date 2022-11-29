@@ -1,5 +1,6 @@
 package com.obligatorio.obligatorio2dda.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,5 +42,16 @@ public class CompraServiceImpl implements CompraService{
         compraRepository.deleteByIds(id, ci);
         
     }
-    
+
+    public int getCountForci(Long ci){
+        List<Compra> compras = compraRepository.findAll();
+        int cont =0;
+        for(int i =0; i<compras.size(); i++){
+            if(compras.get(i).getCi().equals(ci)){
+                cont++;
+            }
+        }
+        return cont;
+    }
+
 }

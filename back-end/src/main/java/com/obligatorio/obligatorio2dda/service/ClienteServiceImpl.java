@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.obligatorio.obligatorio2dda.entity.Cliente;
+import com.obligatorio.obligatorio2dda.entity.PlanesViaje;
 import com.obligatorio.obligatorio2dda.repository.ClienteRepository;
 
 @Service
@@ -14,6 +15,7 @@ public class ClienteServiceImpl implements ClienteService{
 
     @Autowired
     private ClienteRepository clienteRepository;
+
     
     @Override
     @Transactional(readOnly=true)
@@ -52,5 +54,5 @@ public class ClienteServiceImpl implements ClienteService{
         }
         
     }
-    
+
 }

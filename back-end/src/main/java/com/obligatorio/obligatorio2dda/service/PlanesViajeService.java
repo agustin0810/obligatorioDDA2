@@ -9,7 +9,7 @@ import com.obligatorio.obligatorio2dda.entity.PlanesViaje;
 @Service
 public interface PlanesViajeService {
     public Iterable<PlanesViaje> findAll();
-    public Optional<PlanesViaje> findById(int Id);
+    public Optional<PlanesViaje> findById(int id);
     public PlanesViaje save(PlanesViaje save);
     public void deleteById(int Id);
 }

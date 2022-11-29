@@ -33,11 +33,13 @@ public class PlanController {
             return false;
         }
         return true;
+        
     }
     @CrossOrigin(origins="http://localhost:3000")
     @PostMapping("/add")
     ResponseEntity agregarPlanDeViaje(@RequestBody PlanesViaje planViaje){
         try{
+            
             if(validateFields(planViaje)){
 
                 return ResponseEntity.status(HttpStatus.OK).body(planesViajeService.save(planViaje));
