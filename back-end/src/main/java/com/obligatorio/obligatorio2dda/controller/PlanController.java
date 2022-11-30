@@ -1,6 +1,9 @@
 package com.obligatorio.obligatorio2dda.controller;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -70,7 +73,7 @@ public class PlanController {
 
     @CrossOrigin(origins = "http://localhost:3000")
     @DeleteMapping("/delete")
-    ResponseEntity deletePlan(@RequestParam int id) {
+    ResponseEntity deletePlan(@RequestParam Long id) {
         
         try{
             System.out.println(id);
@@ -89,9 +92,22 @@ public class PlanController {
 
     @CrossOrigin(origins="http://localhost:3000")
     @GetMapping("{id}")
-    ResponseEntity conseguirPlan(@PathVariable int id){
+    ResponseEntity conseguirPlan(@PathVariable Long id){
         try{
             return ResponseEntity.status(HttpStatus.OK).body(planesViajeService.findById(id));
+        }
+        catch(Exception e){
+            HashMap<String, String> error = new HashMap<>();
+            error.put("errorMsg", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+        }
+    }
+
+    @CrossOrigin(origins="http://localhost:3000")
+    @GetMapping("/getPlansListing")
+    ResponseEntity getPlansListing(@RequestParam ArrayList<Integer> ids, @RequestParam String date){
+        try{
+            return ResponseEntity.status(HttpStatus.OK).body(planesViajeService.getPlansListing(ids, date));
         }
         catch(Exception e){
             HashMap<String, String> error = new HashMap<>();

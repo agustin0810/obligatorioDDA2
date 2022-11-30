@@ -27,6 +27,7 @@ public class ClienteServiceImpl implements ClienteService{
     @Transactional(readOnly=true)
     public Optional<Cliente> findById(Long Id) {
         // TODO Auto-generated method stub
+        System.out.println("aa");
         return clienteRepository.findById(Id);
     }
 

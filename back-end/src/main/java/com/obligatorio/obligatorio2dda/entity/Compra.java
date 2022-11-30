@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.NamedQuery;
@@ -11,14 +13,23 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "compras")
-@IdClass(Compra.class)
 @NamedQuery(name = "Compra.findByci", query = "select count(*) from Compra where ci = ?1")
 public class Compra implements Serializable{
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long idCompra;
+    
+    public Long getIdCompra() {
+        return idCompra;
+    }
+
+    public void setIdCompra(Long idCompra) {
+        this.idCompra = idCompra;
+    }
+
     @Column(length = 8)
     private Long ci;
 
-    @Id
     @Column(name = "id", length = 20)
     private int id;
 

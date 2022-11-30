@@ -1,5 +1,9 @@
 package com.obligatorio.obligatorio2dda.service;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +27,7 @@ public class PlanesViajeServiceImpl2 implements PlanesViajeService{
 
     @Override
     @Transactional
-    public Optional<PlanesViaje> findById(int id) {
+    public Optional<PlanesViaje> findById(Long id) {
         // TODO Auto-generated method stub
         try{
         return planesViajeRepository.findById(id);
@@ -43,8 +47,39 @@ public class PlanesViajeServiceImpl2 implements PlanesViajeService{
 
     @Override
     @Transactional
-    public void deleteById(int Id) {
+    public void deleteById(Long Id) {
         planesViajeRepository.deleteById(Id);
         
+    }
+
+    @Override
+    public Iterable<PlanesViaje> getPlansListing(ArrayList<Integer> ids, String fecha) {
+        // TODO Auto-generated method stub
+        try{
+            
+        List<PlanesViaje> all = planesViajeRepository.findAll();
+        ArrayList<PlanesViaje> listFiltered = new ArrayList<PlanesViaje>();
+        if(!"null".equals(fecha)){
+
+            ArrayList<PlanesViaje> listFilteredWDate = new ArrayList<PlanesViaje>();
+            for(int i =0; i<all.size(); i++){
+                Date date = new Date(fecha);
+                if(all.get(i).getDate().after(date) && ids.contains(all.get(i).getId())){
+                    listFilteredWDate.add(all.get(i));
+                }
+            }
+            return listFilteredWDate;
+        }
+        for(int i =0; i<all.size(); i++){
+            if(ids.contains(all.get(i).getId())){
+                listFiltered.add(all.get(i));
+            }
+        }
+        return listFiltered;
+        
+        }
+        catch(Exception e){
+            return null;
+        }
     }
 }

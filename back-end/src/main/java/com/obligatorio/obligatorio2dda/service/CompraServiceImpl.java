@@ -1,6 +1,8 @@
 package com.obligatorio.obligatorio2dda.service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,13 +25,6 @@ public class CompraServiceImpl implements CompraService{
     }
 
     @Override
-    @Transactional(readOnly=true)
-    public Optional<Compra> findByIds(int id, int ci) {
-        // TODO Auto-generated method stub
-        return compraRepository.findByIds(id, ci);
-    }
-
-    @Override
     @Transactional
     public Compra save(Compra save) {
         // TODO Auto-generated method stub
@@ -38,8 +33,8 @@ public class CompraServiceImpl implements CompraService{
 
     @Override
     @Transactional
-    public void deleteByIds(int id, int ci) {
-        compraRepository.deleteByIds(id, ci);
+    public void deleteById(Long compraId) {
+        compraRepository.deleteById(compraId);
         
     }
 
@@ -53,5 +48,31 @@ public class CompraServiceImpl implements CompraService{
         }
         return cont;
     }
+
+    public Iterable<Integer> getComprasForci(Long ci){
+        List<Compra> compras = compraRepository.findAll();
+        ArrayList<Integer> comprasFiltradas = new ArrayList<Integer>();
+
+        for(int i =0; i<compras.size(); i++){
+            if(compras.get(i).getCi().equals(ci)){
+                comprasFiltradas.add(compras.get(i).getId());
+            }
+        }
+        return comprasFiltradas;
+    }
+    public Iterable<Compra> getComprasCI(Long ci){
+        List<Compra> compras = compraRepository.findAll();
+        
+        ArrayList<Compra> comprasFiltradas = new ArrayList<Compra>();
+        
+        for(int i =0; i<compras.size();i++){
+            if(Objects.equals(compras.get(i).getCi(), ci)){
+
+                comprasFiltradas.add(compras.get(i));
+            }
+        }
+        return comprasFiltradas;
+    }
+
 
 }

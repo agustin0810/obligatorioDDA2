@@ -188,16 +188,9 @@ public class ClienteController {
     }
     @CrossOrigin(origins="http://localhost:3000")
     @GetMapping("/getFinalCost")
-    ResponseEntity conseguirCostoFinal(@RequestParam Long ci, @RequestParam double costoActual, @RequestParam int cantCompras){
+    ResponseEntity conseguirCostoFinal(@RequestParam Long ci, @RequestParam double costoActual){
         try{
-            System.out.println(costoActual);
             Optional<Cliente> unCli = clienteService.findById(ci);
-            /* SACAR ESTO DE ACA Y LLEVARLO A REALIZACION DE COMPRA
-            if(cantCompras>=3){
-                Cliente temp = new Cliente(unCli.get().getCi(), unCli.get().getName(), unCli.get().getLastName(), unCli.get().getEmail(), Tipo.PREMIUM);
-                clienteService.save(temp);
-            }
-             */
             Tipo tipoClient = unCli.get().getTipo();
             if(tipoClient==Tipo.PREMIUM){
                 return ResponseEntity.status(HttpStatus.OK).body(costoActual - (costoActual * 0.2));
@@ -207,6 +200,27 @@ public class ClienteController {
 
                 return ResponseEntity.status(HttpStatus.OK).body(costoActual);
             }
+        }
+        catch(Exception e){
+            HashMap<String, String> error = new HashMap<>();
+            error.put("errorMsg", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+        }
+    }
+    
+    @CrossOrigin(origins = "http://localhost:3000")
+    @PostMapping("/actualizarCliente")
+    ResponseEntity actualizarCliente(@RequestParam Long ci, @RequestParam int cantCompras) {
+        try{
+            Optional<Cliente> unCli = clienteService.findById(ci);
+            if(cantCompras+1>=3){
+                Cliente temp = new Cliente(unCli.get().getCi(), unCli.get().getName(), unCli.get().getLastName(), unCli.get().getEmail(), Tipo.PREMIUM);
+                clienteService.save(temp);
+            }
+            
+            return ResponseEntity.status(HttpStatus.OK).body(unCli);
+            
+            
         }
         catch(Exception e){
             HashMap<String, String> error = new HashMap<>();
