@@ -31,8 +31,9 @@ export const PlansList = () =>{
                     <List className="itemsList">
                         
                     {planes.map((aPlan, i) => { 
+                        
+                        {console.log(aPlan)}
                         return(
-
                             <ListItem className="itemList"
                             >
                             <ListItemText style={{wordWrap: 'break-word'}} 

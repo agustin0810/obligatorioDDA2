@@ -213,7 +213,9 @@ public class ClienteController {
     ResponseEntity actualizarCliente(@RequestParam Long ci, @RequestParam int cantCompras) {
         try{
             Optional<Cliente> unCli = clienteService.findById(ci);
-            if(cantCompras+1>=3){
+            cantCompras = cantCompras + 1;
+            System.out.println(cantCompras);
+            if(cantCompras>=3){
                 Cliente temp = new Cliente(unCli.get().getCi(), unCli.get().getName(), unCli.get().getLastName(), unCli.get().getEmail(), Tipo.PREMIUM);
                 clienteService.save(temp);
             }

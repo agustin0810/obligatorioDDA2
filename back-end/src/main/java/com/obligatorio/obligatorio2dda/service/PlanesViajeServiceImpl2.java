@@ -26,13 +26,14 @@ public class PlanesViajeServiceImpl2 implements PlanesViajeService{
     }
 
     @Override
-    @Transactional
-    public Optional<PlanesViaje> findById(Long id) {
+    @Transactional(readOnly=true)
+    public Optional<PlanesViaje> findById(int id) {
         // TODO Auto-generated method stub
         try{
         return planesViajeRepository.findById(id);
         }
         catch(Exception e){
+            System.out.println(e.getMessage());
             return null;
         }
     }
@@ -47,7 +48,7 @@ public class PlanesViajeServiceImpl2 implements PlanesViajeService{
 
     @Override
     @Transactional
-    public void deleteById(Long Id) {
+    public void deleteById(int Id) {
         planesViajeRepository.deleteById(Id);
         
     }
@@ -68,7 +69,17 @@ public class PlanesViajeServiceImpl2 implements PlanesViajeService{
                     listFilteredWDate.add(all.get(i));
                 }
             }
-            return listFilteredWDate;
+            ArrayList<PlanesViaje> listFirstFilteredWDate = new ArrayList<PlanesViaje>();
+
+            for(int i =0; i<listFilteredWDate.size(); i++){
+                Date fechaMin = listFilteredWDate.get(0).getDate();
+                if(listFilteredWDate.get(i).getDate().before(fechaMin) || listFilteredWDate.get(i).getDate().equals(fechaMin)){
+                    fechaMin = listFilteredWDate.get(i).getDate();
+                    listFirstFilteredWDate.clear();
+                    listFirstFilteredWDate.add(listFilteredWDate.get(i));
+                }
+            }
+            return listFirstFilteredWDate;
         }
         for(int i =0; i<all.size(); i++){
             if(ids.contains(all.get(i).getId())){

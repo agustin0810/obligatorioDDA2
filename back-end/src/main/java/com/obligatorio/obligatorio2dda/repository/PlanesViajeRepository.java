@@ -10,6 +10,6 @@ import org.springframework.stereotype.Repository;
 import com.obligatorio.obligatorio2dda.entity.PlanesViaje;
 
 @Repository
-public interface PlanesViajeRepository extends JpaRepository<PlanesViaje, Long>{
+public interface PlanesViajeRepository extends JpaRepository<PlanesViaje, Integer>{
 
 }

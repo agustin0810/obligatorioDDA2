@@ -73,7 +73,7 @@ public class PlanController {
 
     @CrossOrigin(origins = "http://localhost:3000")
     @DeleteMapping("/delete")
-    ResponseEntity deletePlan(@RequestParam Long id) {
+    ResponseEntity deletePlan(@RequestParam int id) {
         
         try{
             System.out.println(id);
@@ -92,7 +92,7 @@ public class PlanController {
 
     @CrossOrigin(origins="http://localhost:3000")
     @GetMapping("{id}")
-    ResponseEntity conseguirPlan(@PathVariable Long id){
+    ResponseEntity conseguirPlan(@PathVariable int id){
         try{
             return ResponseEntity.status(HttpStatus.OK).body(planesViajeService.findById(id));
         }

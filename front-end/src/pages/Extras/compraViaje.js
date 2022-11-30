@@ -120,6 +120,7 @@ export const CompraViaje = () =>{
                 }).then(response => {
                     if(response.status==200){
                         setAlerta(true)
+                        getComprasCI()
                         fetch('http://localhost:8080/clients/actualizarCliente?ci='+selectedClient.split(",")[0]+'&cantCompras='+compras, {
                             method: 'POST',
                             headers: {
@@ -218,7 +219,7 @@ export const CompraViaje = () =>{
                     })}
                     </List>
                 </div>
-            : <h1>No hay planes ingresados para el cliente</h1>}
+            : <h1>No hay compras para el cliente</h1>}
             </div>
             {alerta2!=false ? <Alert severity="success" className="alert">{"Compra eliminada con éxito"}</Alert>: ""}
 

@@ -11,7 +11,10 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import FileBase64 from 'react-file-base64';
 
-
+import FormControl from '@mui/material/FormControl'
+import InputLabel from '@mui/material/InputLabel'
+import Select from '@mui/material/Select'
+import MenuItem from '@mui/material/MenuItem'
 
 export const PlansAdd = () =>{
     const [destiny, setDestiny] = useState(null);
@@ -38,7 +41,12 @@ export const PlansAdd = () =>{
         }
     }
     function checkFields(){
-
+        let selectedDate = new Date(date)
+        selectedDate = new Date(selectedDate.toDateString())
+        let today = new Date();
+        selectedDate.setHours(0,0,0,0)
+        today.setHours(0,0,0,0)
+        
         //Errores de filling
         if(destiny==null || date==null || modality==null || cost==null){
 
@@ -63,7 +71,7 @@ export const PlansAdd = () =>{
             setErrorT("Ingrese destino válido (no más de 20 dígitos)")
             return false
         }
-        else if(date<Date.now){
+        else if(selectedDate <today){
             setErrorT("Ingrese una fecha mayor o igual a hoy")
             return false
         }
@@ -81,7 +89,8 @@ export const PlansAdd = () =>{
     }
     function handleSubmit(){
         if(checkFields()){
-            console.log(pictures)
+            if(pictures.length!=0){
+              
                 fetch('http://localhost:8080/plans/add', {
                   method: 'POST',
                   body: JSON.stringify({destiny: destiny, date: date, modality: modality, cost: cost}),
@@ -92,7 +101,26 @@ export const PlansAdd = () =>{
                 .then(plan=>uploadImages(plan.id))
                 //.then(plan => plan!=null ?uploadImages(plan.id): setErrorT("No se pudo realizar el alta"))
                 .catch(error => setErrorT(error))
-
+  
+            }
+            else{
+                fetch('http://localhost:8080/plans/add', {
+                    method: 'POST',
+                    body: JSON.stringify({destiny: destiny, date: date, modality: modality, cost: cost}),
+                    headers: {
+                      'Content-Type': 'application/json'
+                    }
+                }).then(response => {
+                    console.log("a")
+                    if(response.status==200){
+                        setErrorT("")
+                        setAlerta(true);
+                    }
+                })
+                  //.then(plan => plan!=null ?uploadImages(plan.id): setErrorT("No se pudo realizar el alta"))
+                  .catch(error => setErrorT(error))
+    
+            }
         }
     }
     function uploadImages(planId){
@@ -105,7 +133,13 @@ export const PlansAdd = () =>{
               headers: {
                 'Content-Type': 'application/json'
               }
-            }).then(response => response.status==200?setAlerta(true): null)
+            }).then(response => {
+                console.log("a")
+                if(response.status==200){
+                    setErrorT("")
+                    setAlerta(true);
+                }
+            })
             .catch(error => setErrorT(error))
         }
         
@@ -130,20 +164,6 @@ export const PlansAdd = () =>{
                 style={{width: '40vmin'}}
                 onChange={(e)=>setDestiny(e.target.value)}
                 />
-                <TextField
-                required
-                id="modality"
-                label="Modalidad"
-                style={{width: '40vmin'}}
-                onChange={(e)=>setModality(e.target.value)}
-                />
-                <TextField
-                required
-                id="cost"
-                label="Costo"
-                style={{width: '40vmin'}}
-                onChange={(e)=>setCost(e.target.value)}
-                />
                 <LocalizationProvider dateAdapter={AdapterDayjs} >
                 <DatePicker
                     label="Fecha del viaje"
@@ -155,8 +175,43 @@ export const PlansAdd = () =>{
                         style={{width: '40vmin'}} {...params} />}
                 />
                 </LocalizationProvider>
+
+                <TextField
+                required
+                id="cost"
+                label="Costo"
+                style={{width: '40vmin'}}
+                onChange={(e)=>setCost(e.target.value)}
+                />
+ 
             </div>
             <div>
+            <FormControl variant="standard" sx={{ m: 1, minWidth: 120, marginBottom: '5vmin' }}>
+                    <InputLabel id="demo-simple-select-standard-label" style={{position: 'relative', margin: "auto"}}>Modalidad</InputLabel>
+                    <Select
+                    labelId="demo-simple-select-standard-label"
+                    id="demo-simple-select-standard"
+                    onChange={(e) =>setModality(e.target.value)}
+                    value={modality}
+                    label="Modalidad"
+                    style={{position: 'relative', margin: "auto", width: "40vmin"}}
+                    >  
+                        <MenuItem value={"TERRESTRE"}>
+                        <em>{"TERRESTRE"}</em>
+                        </MenuItem>
+
+                        <MenuItem value={"AEREA"}>
+                        <em>{"AEREA"}</em>
+                        </MenuItem>
+                        
+                        <MenuItem value={"MARITIMA"}>
+                        <em>{"MARITIMA"}</em>
+                        </MenuItem>
+                    </Select>
+                </FormControl>
+            </div>
+            <div>
+
                 <FileBase64
                 multiple={ true }
                 hidden

@@ -80,6 +80,10 @@ export const ClientModify = () =>{
             setErrorT("Error: el email no puede tener más de 30 caracteres")
             return false
         }
+        else if(!(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g.test(email))){
+            setErrorT("Error: ingrese un email válido")
+            return false
+        }
 
         return true;
     }
@@ -116,6 +120,7 @@ export const ClientModify = () =>{
             <div>
                 <TextField
                 required
+                disabled
                 id="ci"
                 label="Cédula de Identidad"
                 style={{width: '40vmin'}}

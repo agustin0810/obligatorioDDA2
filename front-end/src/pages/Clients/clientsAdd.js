@@ -55,7 +55,10 @@ export const ClientsAdd = () =>{
             setErrorT("Error: el email no puede tener más de 30 caracteres")
             return false
         }
-
+        else if(!(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g.test(email))){
+            setErrorT("Error: ingrese un email válido")
+            return false
+        }
         return true;
     }
     const checkRepeated = async () =>{
