@@ -18,32 +18,36 @@ export const Listing = () =>{
     const [clientes, setClientes] = React.useState([]);
     const [errorT, setErrorT] = React.useState("");
     const [alerta, setAlerta] = React.useState(false);
-    const [selectedClientCI, setSelectedClientCI] = React.useState(null);
-    const [date, setDate] = React.useState(Date.now);
+    const [selectedClient, setSelectedClient] = React.useState(null);
+    const [date, setDate] = React.useState("null");
     const [planes, setPlanes] = React.useState([]);
     
     function listClients(){
-        fetch('localhost:8080/clients')
-        .then(data => {
-            return data.json();
-        })
-        .then(client => {
-            clientes.push(client)
-        })
-        .catch(error => setErrorT(error.errorMsg))
+        fetch('http://localhost:8080/clients')
+        .then(response => response.json())
+        .then(data => setClientes(data))
+        .catch(error => setErrorT(error))
+    
     }
     function goToImages(id){
-        window.location.assign("/planImages/"+id)
+        window.location.href="/planImages/"+id
     }
     function handleSubmit(){
-        fetch('localhost:8080/plans?' + new URLSearchParams({selectedClientCi: selectedClientCI, selectedDate: date}))
-        .then(data => {
-            return data.json();
+        fetch('http://localhost:8080/compras/getComprasForci?' + new URLSearchParams({ci: selectedClient.split(",")[0]}))
+        .then(response => response.json())
+        .then(idList => {
+            console.log(idList)
+            fetch('http://localhost:8080/plans/getPlansListing?' + new URLSearchParams({ids: idList, date: date}))
+            .then(response => response.json())
+            .then(plan => {
+                
+                console.log(plan)
+                setPlanes(plan)
+            })
+            .catch(error => setErrorT(error))
         })
-        .then(plan => {
-            planes.push(plan)
-        })
-        .catch(error => setErrorT(error.errorMsg))
+        .catch(error => setErrorT(error))
+ 
     }
     
     React.useEffect(() => {
@@ -60,16 +64,16 @@ export const Listing = () =>{
                 <Select
                 labelId="demo-simple-select-standard-label"
                 id="demo-simple-select-standard"
-                value={""}
-                onChange={(e) =>setSelectedClientCI(e.target.value)}
+                value={selectedClient}
+                onChange={(e) =>setSelectedClient(e.target.value)}
                 label="Cliente"
                 style={{position: 'relative', margin: "auto", width: "40vmin", backgroundColor: 'lightgray'}}
                 >
                                         
-                {clientes.map((aClient, i) => { 
+                {clientes.map((aClient, i) => {
                     return(
-                        <MenuItem value={aClient.ci}>
-                        <em>{aClient.ci + ", " +aClient.name + " " +aClient.lastname}</em>
+                        <MenuItem value={aClient.ci + ", " +aClient.name + ", " +aClient.lastName}>
+                        <em>{aClient.ci + ", " +aClient.name + " " +aClient.lastName}</em>
                         </MenuItem>
 
                     )
@@ -79,7 +83,7 @@ export const Listing = () =>{
             <LocalizationProvider dateAdapter={AdapterDayjs} >
                 <DatePicker
                     label="A partir de:"
-                    value={date}
+                    value={date!="null"?date: null}
                     onChange={(newValue) => {
                     setDate(newValue);
                     }}
@@ -104,7 +108,7 @@ export const Listing = () =>{
                             primary={aPlan.id + ", " + aPlan.destiny + ", " + aPlan.date + ", " + aPlan.modality + ", "+ aPlan.cost}
                             />
                             
-                            <Button id={aPlan.id} onClick={(e)=>goToImages(e.target.id)}>Ir a imágenes</Button>
+                            <Button id={aPlan.id} onClick={(e)=>goToImages(aPlan.id)}>Ir a imágenes</Button>
                             </ListItem>
 
 

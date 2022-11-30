@@ -15,25 +15,27 @@ export const PlansDel = () =>{
 
     
     function deletePlan(aPlanId){
-        const apiCall = async () => {
-            const response = await fetch('http://localhost:8080/plans/delete/'+aPlanId, {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        }).then(response => response.status==200?setAlerta(true): null)
-        .catch(error => setErrorT(error.errorMsg))
+        fetch('http://localhost:8080/plans/delete?id='+aPlanId, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json', 
+              },
+            }).then(response =>{
+                
+            console.log(response.text)
+                if(response.status==200){
+                    setAlerta(true)
+                    listPlans()
+                }
+            })
+            .catch(error => setErrorT(error))
     }
-    }
+    
     function listPlans(){
-        fetch('localhost:8080/plans')
-        .then(data => {
-            return data.json();
-        })
-        .then(plan => {
-            plans.push(plan)
-        })
-        .catch(error => setErrorT(error.errorMsg))
+        fetch('http://localhost:8080/plans')
+        .then(response => response.json())
+        .then(data => setPlans(data))
+        .catch(error => setErrorT(error))
     }
 
     React.useEffect(() => {
@@ -53,7 +55,7 @@ export const PlansDel = () =>{
 
                             <ListItem className="itemList"
                             secondaryAction={
-                                <IconButton aria-label="delete" id={aPlan.id} onClick={(e) => deletePlan(e.target.id)}>
+                                <IconButton aria-label="delete" id={aPlan.id} onClick={(e) => deletePlan(aPlan.id)}>
                                 <DeleteIcon />
                                 </IconButton>
                             }

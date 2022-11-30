@@ -1,5 +1,6 @@
 package com.obligatorio.obligatorio2dda.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -13,9 +14,8 @@ import com.obligatorio.obligatorio2dda.entity.Compra;
 @Repository
 public interface CompraRepository extends JpaRepository<Compra, Long>{
 
-    @Query(value = "select compra from compras where id=:id and ci=:ci", nativeQuery = true )
-    Optional<Compra> findByIds(@Param("id") int id, @Param("ci") int ci);
+    @Query(value="select count(*) from compras where ci=:ci", nativeQuery = true )
+    int getCantCompras(@Param("ci") Long ci);
 
-    @Query(value="delete compra from compras where id=:id and ci=:ci", nativeQuery = true )
-    void deleteByIds(@Param("id") int id, @Param("ci") int ci);
+    int findCountByci(Long ci);
 }

@@ -1,46 +1,86 @@
-import React from 'react'
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import Alert from '@mui/material/Alert';
-import Box from '@mui/material/Box';
-import '../../styles/general.css';
-import '../../styles/forms.css';
-import { useState, useEffect } from 'react';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { useParams } from "react-router-dom"
 
-import '../../styles/general.css';
-import '../../styles/forms.css';
+import { useParams } from "react-router-dom"
+import * as React from 'react';
+import '../../styles/forms.css'
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
+import Button from '@mui/material/Button'
+import 'bootstrap/dist/css/bootstrap.min.css';
+import Carousel from 'react-bootstrap/Carousel';
+import viaje1 from '../../images/viaje1.jpg'
+import viaje2 from '../../images/viaje2.jpg'
+import viaje3 from '../../images/viaje3.png'
 
 export const PlanImages = () =>{
-    const [images, setImages] = useState([])
-    const { id } = useParams()
+    const [images, setImages] = React.useState([]);
     const [errorT, setErrorT] = React.useState("");
+    const { id } = useParams()
 
-    const getImages =()=>{
-        fetch('localhost:8080/images/'+id)
+    function listImages(){
+        fetch('http://localhost:8080/images/get?id='+id)
+        .then(response => response.json())
         .then(data => {
-            return data.json();
+            
+            console.log(data)
+            setImages(data)
         })
-        .then(image => {
-            setImages(image)
-        })
-        .catch(error => setErrorT(error.errorMsg))
+        .catch(error => setErrorT(error))
     }
-    useEffect(() => {
-      getImages()
+
+    React.useEffect(() => {
+      listImages()
     }, [])
 
     return(
         <div className="App">
-        {images.length!=0 ? 
-        <div className="formContainer" >
-        {images.map((anImage, i) => {
-            <img src={"../../images/"+anImage.filename} />})}
-        </div>
-        : <h1> No se encontraron imágenes </h1>}
-        </div>
-    )
+
+            <h1> Lista de imágenes </h1>
+            <div className="formContainer" >
+                
+                <div className="gridList">
+                <Carousel style={{width: '100vmin', height: '60vmin', position: 'relative', margin: 'auto'}}>
+                    <Carousel.Item>
+                        <img
+                        className="d-block w-100"
+                        src={viaje1}
+                        alt="First slide"
+                        />
+                        <Carousel.Caption>
+                        <h3>Grandes paseos por la montaña</h3>
+                        <p></p>
+                        </Carousel.Caption>
+                    </Carousel.Item>
+                    <Carousel.Item>
+                        <img
+                        className="d-block w-100"
+                        src={viaje2}
+                        alt="Second slide"
+                        />
+
+                        <Carousel.Caption>
+                        <h3>Senderismo</h3>
+                        <p></p>
+
+                        </Carousel.Caption>
+                    </Carousel.Item>
+                    <Carousel.Item>
+                        <img
+                        className="d-block w-100"
+                        src={viaje3}
+                        alt="Third slide"
+                        />
+
+                        <Carousel.Caption>
+                        <h3>Paseos por la ciudad</h3>
+                        <p></p>
+
+                        </Carousel.Caption>
+                    </Carousel.Item>
+                    </Carousel>
+
+                </div>
+            </div>
+            </div>
+        )
 }

@@ -39,7 +39,7 @@ export const ClientModify = () =>{
             setTipo(client.tipo)
             setCI(client.ci)
         })
-        .catch(error => setErrorT(error.errorMsg))
+        .catch(error => setErrorT(error))
     }, [])
     
     function checkFields(){
@@ -80,6 +80,10 @@ export const ClientModify = () =>{
             setErrorT("Error: el email no puede tener más de 30 caracteres")
             return false
         }
+        else if(!(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g.test(email))){
+            setErrorT("Error: ingrese un email válido")
+            return false
+        }
 
         return true;
     }
@@ -93,7 +97,7 @@ export const ClientModify = () =>{
                     'Content-Type': 'application/json'
                 }
             }).then(response => response.status==200?setAlerta(true): null)
-            .catch(error => setErrorT(error.errorMsg))
+            .catch(error => setErrorT(error))
             
         }
     }
@@ -116,6 +120,7 @@ export const ClientModify = () =>{
             <div>
                 <TextField
                 required
+                disabled
                 id="ci"
                 label="Cédula de Identidad"
                 style={{width: '40vmin'}}
