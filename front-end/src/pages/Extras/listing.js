@@ -116,7 +116,7 @@ export const Listing = () =>{
                     })}
                     </List>
                 </div>
-            : <h1>No hay planes ingresados para el cliente</h1>}
+            : <h1>No hay planes ingresados para el cliente o a partir de la fecha ingresada</h1>}
             </div>
         </div>
     </div>

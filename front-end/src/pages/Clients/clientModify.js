@@ -96,7 +96,13 @@ export const ClientModify = () =>{
                 headers: {
                     'Content-Type': 'application/json'
                 }
-            }).then(response => response.status==200?setAlerta(true): null)
+            }).then(response => {
+                console.log("a")
+                if(response.status==200){
+                    setErrorT("")
+                    setAlerta(true);
+                }
+            })
             .catch(error => setErrorT(error))
             
         }

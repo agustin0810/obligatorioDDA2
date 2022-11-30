@@ -15,7 +15,7 @@ import com.obligatorio.obligatorio2dda.entity.PlanesViaje;
 import com.obligatorio.obligatorio2dda.repository.PlanesViajeRepository;
 
 @Service
-public class PlanesViajeServiceImpl2 implements PlanesViajeService{
+public class PlanesViajeServiceImpl implements PlanesViajeService{
     @Autowired
     private PlanesViajeRepository planesViajeRepository;
     
