@@ -7,6 +7,13 @@ import InputLabel from '@mui/material/InputLabel'
 import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
 
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
+import ListItemText from '@mui/material/ListItemText'
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
+
+
 import '../../styles/general.css';
 import '../../styles/forms.css';
 
@@ -15,69 +22,114 @@ export const CompraViaje = () =>{
     const [planes, setPlanes] = React.useState([]);
     const [errorT, setErrorT] = React.useState("");
     const [alerta, setAlerta] = React.useState(false);
-    
-    const [selectedClientCI, setSelectedClientCI] = React.useState(null);
-    const [selectedPlanID, setSelectedPlanID] = React.useState(null);
+    const [alerta2, setAlerta2] = React.useState(false);
+    const [selectedClient, setSelectedClient] = React.useState(null);
+    const [selectedPlan, setSelectedPlan] = React.useState(null);
     const [finalCost, setFinalCost] = React.useState(null); 
+    const [compras, setCompras] = React.useState(null);
+    const [comprasCI, setComprasCI] = React.useState([]);
     
-    function getFinalCost(){
-        if(selectedPlanID!=null && selectedClientCI!=null){
+    function deleteCompra(compraId) {
+      fetch('http://localhost:8080/compras/delete?compraId='+compraId, {
+      method: 'DELETE',
+      headers: {
+          'Content-Type': 'application/json', 
+        },
+      }).then(response =>{
+          if(response.status==200){
+              setAlerta2(true)
+              getComprasCI()
+          }
+      })
+      .catch(error => setErrorT(error))
+  }
+    function getComprasCI(){
+      if(selectedClient!=null){
+        fetch('http://localhost:8080/compras/getComprasCI?ci='+selectedClient.split(",")[0])
+      .then(data => data.json())
+      .then(compras => {
+        setComprasCI(compras)
+      })
+      .catch(error => setErrorT(error))
+      }
+    }
+    function cantComprasCI(){
+        if(selectedPlan!=null && selectedClient!=null){
+             
+          fetch('http://localhost:8080/compras/cantComprasCI?ci='+selectedClient.split(",")[0])
+          .then(data => data.json())
+          .then(compras => {
+            setCompras(compras)
+            getFinalCost(compras);
+          })
+          .catch(error => setErrorT(error))
+          
+          }
+    }
+    function getFinalCost(compras){
+        if(selectedPlan!=null && selectedClient!=null && compras!=null){
             
-        const apiCall = async () => {
-            const response = await fetch('http://localhost:5000/clients/getFinalCost', {
-          method: 'POST',
-          body: {"ci": selectedClientCI, "planId": selectedPlanID},
+          fetch('http://localhost:8080/clients/getFinalCost?ci='+selectedClient.split(",")[0]+'&costoActual='+selectedPlan.split(",")[3], {
+          method: 'GET',
           headers: {
             'Content-Type': 'application/json'
           }
         }).then(response => response.json())
-        .then(plan => plan!=null? setFinalCost(plan.cost): setErrorT("No se encontró el costo"))
+        .then(cost => setFinalCost(cost))
+        .catch(error => setErrorT(error))
         
         }
     }
-    }
     function listClients(){
-        fetch('localhost:5000/clients')
-        .then(data => {
-            return data.json();
-        })
-        .then(client => {
-            clientes.push(client)
-        });
+        fetch('http://localhost:8080/clients')
+        .then(response => response.json())
+        .then(data => setClientes(data))
+        .catch(error => setErrorT(error))
+    
     }
     function listPlans(){
-        fetch('localhost:5000/plans')
-        .then(data => {
-            return data.json();
-        })
-        .then(plan => {
-            planes.push(plan)
-        });
+        fetch('http://localhost:8080/plans')
+        .then(response => response.json())
+        .then(data => setPlanes(data))
+        .catch(error => setErrorT(error))
     }
 
     React.useEffect(() => {
+        
       listClients()
       listPlans()
-      getFinalCost();
-    }, [])
+      cantComprasCI();
+      getComprasCI()
+    }, [selectedClient, selectedPlan, alerta])
 
     function checkFields(){
-        if(selectedClientCI!=null && selectedPlanID!=null){
+        if(selectedClient!=null && selectedPlan!=null){
             return true;
         }
         return false;
     }
     function handleSubmit(){
         if(checkFields()){
-            const apiCall = async () => {
-                    const response = await fetch('http://localhost:5000/purchase/add', {
+            
+            fetch('http://localhost:8080/compras/add?cantCompras='+compras, {
                   method: 'POST',
-                  body: {"ci": selectedClientCI, "planID": selectedPlanID, "cost": finalCost},
+                  body: JSON.stringify({"ci": selectedClient.split(",")[0], "id": selectedPlan.split(",")[0], "precioTotal": finalCost}),
                   headers: {
                     'Content-Type': 'application/json'
                   }
-                }).then(response => response.status==200?setAlerta(true): null)
-            }
+                }).then(response => {
+                    if(response.status==200){
+                        setAlerta(true)
+                        fetch('http://localhost:8080/clients/actualizarCliente?ci='+selectedClient.split(",")[0]+'&cantCompras='+compras, {
+                            method: 'POST',
+                            headers: {
+                              'Content-Type': 'application/json'
+                            }
+                          }).then(response => response.status==200?setAlerta(true): null)
+                          .catch(error => setErrorT(error))
+                }})
+                .catch(error => setErrorT(error))
+            
         }
     }
 
@@ -86,21 +138,26 @@ export const CompraViaje = () =>{
         
       <h1>Compra de viaje</h1>
       <div className="formContainer" >
+        
         <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+            
             <InputLabel id="demo-simple-select-standard-label" style={{position: 'relative', margin: "auto"}}>Cliente</InputLabel>
             <Select
             labelId="demo-simple-select-standard-label"
             id="demo-simple-select-standard"
-            value={""}
-            onChange={(e) =>setSelectedClientCI(e.target.value)}
+            value={selectedClient}
+            onChange={(e) =>{
+                
+                setSelectedClient(e.target.value)
+            }}
             label="Cliente"
             style={{position: 'relative', margin: "auto", width: "40vmin", backgroundColor: 'lightgray'}}
             >
                                     
-            {clientes.map((aClient, i) => { 
+            {clientes.map((aClient, i) => {
                 return(
-                    <MenuItem value={aClient.ci}>
-                    <em>{aClient.ci + ", " +aClient.name + " " +aClient.lastname}</em>
+                    <MenuItem value={aClient.ci + ", " +aClient.name + ", " +aClient.lastName}>
+                    <em>{aClient.ci + ", " +aClient.name + " " +aClient.lastName}</em>
                     </MenuItem>
 
                 )
@@ -112,14 +169,15 @@ export const CompraViaje = () =>{
             <Select
             labelId="demo-simple-select-standard-label"
             id="demo-simple-select-standard"
-            value={""}
-            onChange={(e) =>setSelectedPlanID(e.target.index)}
+            value={selectedPlan}
+            onChange={(e) =>{
+                setSelectedPlan(e.target.value)}}
             label="Plan de viaje"
             style={{position: 'relative', margin: "auto", width: "40vmin", backgroundColor: 'lightgray'}}
             >
             {planes.map((aPlan, i) => { 
                 return(
-                    <MenuItem value={aPlan.id}>
+                    <MenuItem value={aPlan.id + ", " +aPlan.destiny + ", " +aPlan.date + ", " + aPlan.cost}>
                     <em>{aPlan.id + ", " +aPlan.destiny + " " +aPlan.date}</em>
                     </MenuItem>
 
@@ -127,15 +185,45 @@ export const CompraViaje = () =>{
             })}
             </Select>
         </FormControl>
-        <h1>{finalCost}</h1>
+        <h1>{finalCost!=null?"$"+finalCost:null}</h1>
         <div>
             <Button variant="outlined" color="success" className="addBtn" style={{top: '5vmin'}} onClick={handleSubmit}>Agregar</Button>            
 
         </div>
         {errorT!="" ? <Alert severity="error" className="alert">{"Error: " +errorT}</Alert>: ""}
         {alerta!=false ? <Alert severity="success" className="alert">{"Compra realizada con éxito"}</Alert>: ""}
+        <div style={{border: "lightgray solid thin", margin: '5vmin', marginTop: '10vmin'}}>
+            {comprasCI.length!=0 ? 
+                <div className="gridList">
+                    <List className="itemsList">
+                    {comprasCI.map((compra, i) => { 
+                      
+                        return(
+
+                            <ListItem className="itemList"
+                            secondaryAction={
+                              <IconButton aria-label="delete" onClick={(e) => deleteCompra(compra.idCompra)}>
+                              <DeleteIcon />
+                              </IconButton>
+                            }
+                            >
+                            <ListItemText style={{wordWrap: 'break-word'}} 
+                            primary={"Id compra: "+compra.idCompra + ", CI: " + compra.ci + ", ID plan: " + compra.id + ", Costo: $" + compra.precioTotal}
+                            />
+                            
+                            </ListItem>
+
+
+                        )
+                    })}
+                    </List>
+                </div>
+            : <h1>No hay planes ingresados para el cliente</h1>}
+            </div>
+            {alerta2!=false ? <Alert severity="success" className="alert">{"Compra eliminada con éxito"}</Alert>: ""}
 
       </div>
+
 
     </div>
     )

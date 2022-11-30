@@ -7,8 +7,12 @@ import '../../styles/general.css';
 import '../../styles/forms.css';
 import { useState, useEffect } from 'react';
 import { useParams } from "react-router-dom"
+import FormControl from '@mui/material/FormControl'
+import InputLabel from '@mui/material/InputLabel'
+import Select from '@mui/material/Select'
+import MenuItem from '@mui/material/MenuItem'
 
-export const ClientsModify = () =>{
+export const ClientModify = () =>{
 
     const [name, setName] = useState(null);
     const [lastname, setLastName] = useState(null);
@@ -17,17 +21,25 @@ export const ClientsModify = () =>{
     const [errorT, setErrorT] = useState("");
     const [alerta, setAlerta] = useState(false);
     const [cliente, setCliente] = useState(null);
+    const [tipo, setTipo] = useState(null);
 
     const { id } = useParams()
-    console.log(id)
+    
     useEffect(() => {
-        fetch('localhost:5000/clients/'+id)
+        
+        fetch('http://localhost:8080/clients/'+id)
         .then(data => {
             return data.json();
         })
         .then(client => {
             setCliente(client)
-        });
+            setName(client.name)
+            setLastName(client.lastName)
+            setEmail(client.email)
+            setTipo(client.tipo)
+            setCI(client.ci)
+        })
+        .catch(error => setErrorT(error))
     }, [])
     
     function checkFields(){
@@ -71,19 +83,22 @@ export const ClientsModify = () =>{
 
         return true;
     }
-    function handleSubmit(){
-        if(checkFields()){
-            const apiCall = async () => {
-                const response = await fetch('http://localhost:5000/clients/modify', {
-                  method: 'POST',
-                  body: {"ci": ci, "name": name, "lastname": lastname, "email": email},
-                  headers: {
+    const handleSubmit = () => {
+        if(checkFields){
+            console.log("in")
+            fetch('http://localhost:8080/clients/modify', {
+                method: 'POST',
+                body: JSON.stringify({"ci": ci, "name": name, "lastName": lastname, "email": email, "tipo": tipo}),
+                headers: {
                     'Content-Type': 'application/json'
-                  }
-                }).then(response => response.status==200?setAlerta(true): null)
-            }
+                }
+            }).then(response => response.status==200?setAlerta(true): null)
+            .catch(error => setErrorT(error))
+            
         }
     }
+    
+    
     return(
         <div className="App">
             <h1> Modificación de clientes </h1>
@@ -104,7 +119,7 @@ export const ClientsModify = () =>{
                 id="ci"
                 label="Cédula de Identidad"
                 style={{width: '40vmin'}}
-                value={cliente.ci}
+                value={ci}
                 onChange={(e)=>setCI(e.target.value)}
                 />
                 <TextField
@@ -112,7 +127,7 @@ export const ClientsModify = () =>{
                 id="name"
                 label="Nombre"
                 style={{width: '40vmin'}}
-                value={cliente.name}
+                value={name}
                 onChange={(e)=>setName(e.target.value)}
                 />
                 <TextField
@@ -120,7 +135,7 @@ export const ClientsModify = () =>{
                 id="lastname"
                 label="Apellido"
                 style={{width: '40vmin'}}
-                value={cliente.lastname}
+                value={lastname}
                 onChange={(e)=>setLastName(e.target.value)}
                 />
                 <TextField
@@ -128,12 +143,31 @@ export const ClientsModify = () =>{
                 id="email"
                 label="Email"
                 style={{width: '40vmin'}}
-                value={cliente.email}
+                value={email}
                 onChange={(e)=>setEmail(e.target.value)}
                 />
+                <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                    <InputLabel id="demo-simple-select-standard-label" style={{position: 'relative', margin: "auto"}}>Tipo</InputLabel>
+                    <Select
+                    labelId="demo-simple-select-standard-label"
+                    id="demo-simple-select-standard"
+                    onChange={(e) =>setTipo(e.target.value)}
+                    value={tipo}
+                    label="Tipo"
+                    style={{position: 'relative', margin: "auto", width: "40vmin"}}
+                    >  
+                        <MenuItem value={"STANDARD"}>
+                        <em>{"STANDARD"}</em>
+                        </MenuItem>
+
+                        <MenuItem value={"PREMIUM"}>
+                        <em>{"PREMIUM"}</em>
+                        </MenuItem>
+                    </Select>
+                </FormControl>
             </div>
             <div>
-            <Button variant="outlined" color="success" className="addBtn" style={{top: '5vmin'}} onClick={handleSubmit}>Agregar</Button>            
+            <Button variant="outlined" color="success" className="addBtn" style={{top: '5vmin'}} onClick={handleSubmit}>Modificar</Button>            
 
             </div>
             {/*Manejo de errores FRONT-END*/}

@@ -15,9 +15,10 @@ export const ClientsAdd = () =>{
     const [ci, setCI] = useState(null);
     const [errorT, setErrorT] = useState("");
     const [alerta, setAlerta] = useState(false);
+    const [repeated, setRepeated] = useState(false);
 
     function checkFields(){
-
+        console.log("checking")
         //Errores de filling
         if(name==null || lastname==null || email==null || ci==null){
 
@@ -38,7 +39,7 @@ export const ClientsAdd = () =>{
             setErrorT(error)
             return false;
         }
-        else if((ci.length>8 && ci.length<7) || !ci.match(/^\d+$/)){
+        else if((String(ci).length>8 || String(ci).length<7) || !(String(ci).match(/^\d+$/))){
             setErrorT("Error: ingrese CI válida (7 u 8 dígitos, no '.' ni ',')")
             return false
         }
@@ -57,18 +58,40 @@ export const ClientsAdd = () =>{
 
         return true;
     }
-    function handleSubmit(){
+    const checkRepeated = async () =>{
+        console.log("checkrep")
+        
         if(checkFields()){
-            const apiCall = async () => {
-                    const response = await fetch('http://localhost:5000/clients/add', {
-                  method: 'POST',
-                  body: {"ci": ci, "name": name, "lastname": lastname, "email": email},
-                  headers: {
-                    'Content-Type': 'application/json'
-                  }
-                }).then(response => response.status==200?setAlerta(true): null)
+        fetch('http://localhost:8080/clients/checkRepeated?ci='+ci, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json', 
+            },
+        }).then(response => response.json())
+        .then(res=>{
+            if(res==false){
+                apiCall()
             }
+            else{
+                setErrorT("La CI ya se encuentra ingresada")
+                setAlerta(false)
+            } 
+        })
         }
+    }
+    const apiCall = async () => {
+        setErrorT("")
+        setAlerta(false)
+            
+                await fetch('http://localhost:8080/clients/add', {
+                  method: 'POST',
+                  body: JSON.stringify({ci: ci, lastName: lastname, name: name, email: email}),
+                  headers: {
+                    'Content-Type': 'application/json', 
+                  },
+                }).then(response => response.status==200?setAlerta(true): null)
+                .catch(error => setErrorT(error))
+
     }
     return(
         <div className="App">
@@ -88,7 +111,7 @@ export const ClientsAdd = () =>{
                 id="ci"
                 label="Cédula de Identidad"
                 style={{width: '40vmin'}}
-                onChange={(e)=>setCI(e.target.value)}
+                onChange={(e)=>setCI(parseInt(e.target.value))}
                 />
                 <TextField
                 required
@@ -113,7 +136,7 @@ export const ClientsAdd = () =>{
                 />
             </div>
             <div>
-            <Button variant="outlined" color="success" className="addBtn" style={{top: '5vmin'}} onClick={handleSubmit}>Agregar</Button>            
+            <Button variant="outlined" color="success" className="addBtn" style={{top: '5vmin'}} onClick={checkRepeated}>Agregar</Button>            
 
             </div>
             {/*Manejo de errores FRONT-END*/}

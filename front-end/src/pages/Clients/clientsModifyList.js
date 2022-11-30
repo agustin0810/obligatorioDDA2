@@ -9,19 +9,19 @@ import BorderColor from '@mui/icons-material/BorderColor';
 export const ClientsModifyList = () =>{
     
     const [clientes, setClientes] = React.useState([]);
+    const [errorT, setErrorT] = React.useState("");
     
     function goToClient(id){
-        window.location.href('/clientes/modifyClient/'+id)
+        console.log(id)
+        window.location.href='/clientes/modifyClient/'+id
     }
 
     function listClients(){
-        fetch('localhost:5000/clients')
-        .then(data => {
-            return data.json();
-        })
-        .then(client => {
-            clientes.push(client)
-        });
+        fetch('http://localhost:8080/clients')
+        .then(response => response.json())
+        .then(data => setClientes(data))
+        .catch(error => setErrorT(error))
+    
     }
 
     React.useEffect(() => {
@@ -40,13 +40,13 @@ export const ClientsModifyList = () =>{
 
                             <ListItem className="itemList"
                             secondaryAction={
-                                <IconButton edge="end" aria-label="delete" id={aClient.id} onClick={(e) => goToClient(e.target.id)}>
+                                <IconButton aria-label="delete"onClick={(e) => goToClient(aClient.ci)}>
                                 <BorderColor />
                                 </IconButton>
                             }
                             >
                             <ListItemText style={{wordWrap: 'break-word'}} 
-                            primary={aClient.id + ", " + aClient.ci + ", " + aClient.name + ", " + aClient.lastname + ", "+ aClient.email}
+                            primary={aClient.ci + ", " + aClient.name + ", " + aClient.lastName + ", "+ aClient.email + ", " + aClient.tipo}
                             />
                             </ListItem>
 

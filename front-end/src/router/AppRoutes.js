@@ -14,7 +14,7 @@ import {ClientsAdd} from '../pages/Clients/clientsAdd';
 import {ClientsDel} from '../pages/Clients/clientsDel';
 import {ClientsModifyList} from '../pages/Clients/clientsModifyList';
 import {ClientsList} from '../pages/Clients/clientsList';
-import {ClientsModify} from '../pages/Clients/clientModify';
+import {ClientModify} from '../pages/Clients/clientModify';
 //Planes
 import {MainPlans} from '../pages/Plans/mainPlans';
 import {PlansAdd} from '../pages/Plans/plansAdd';
@@ -39,7 +39,7 @@ function AppRoutes(){
         <Route path="/clientes/delete" element={<ClientsDel />} />
         <Route path="/clientes/modify" element={<ClientsModifyList />} />
         <Route path="/clientes/list" element={<ClientsList />} />
-        <Route path="/clientes/modifyClient/:id" element={<ClientsModify />} />
+        <Route path="/clientes/modifyClient/:id" element={<ClientModify />} />
 
         <Route path="/planesdeviaje" element={<MainPlans />} />
         <Route path="/planesdeviaje/add" element={<PlansAdd />} />

@@ -23,17 +23,20 @@ export const PlansModify = () =>{
 
     const { id } = useParams()
     useEffect(() => {
-        fetch('localhost:5000/plans/'+id)
-        .then(data => {
-            return data.json();
-        })
+        fetch('http://localhost:8080/plans/'+id)
+        .then(data => data.json())
         .then(plan => {
+            console.log(plan)
             setPlan(plan)
-        });
+            setCost(plan.cost)
+            setDestiny(plan.destiny)
+            setModality(plan.modality)
+            setDate(plan.date)
+        })
+        .catch(error => setErrorT(error))
     }, [])
     
     function checkFields(){
-
         //Errores de filling
         if(destiny==null || date==null || modality==null || cost==null){
 
@@ -55,35 +58,36 @@ export const PlansModify = () =>{
             return false;
         }
         else if((destiny.length>20)){
-            setErrorT("Error: ingrese destino válido (no más de 20 dígitos)")
+            setErrorT("Ingrese destino válido (no más de 20 dígitos)")
             return false
         }
         else if(date<Date.now){
-            setErrorT("Error: Ingrese una fecha mayor o igual a hoy")
+            setErrorT("Ingrese una fecha mayor o igual a hoy")
             return false
         }
-        else if(!cost.match(/^\d+$/)){
-            setErrorT("Error: el costo debe ser un valor entero")
+        else if(!String(cost).match(/^\d+$/)){
+            setErrorT("El costo debe ser un valor entero")
             return false
         }
-        else if(modality!="aérea" && modality!="marítima" &&modality!="terrestre"){
+        else if(modality!="AEREA" && modality!="MARITIMA" && modality!="TERRESTRE"){
+            console.log("entro")
             setErrorT("La modalidad debe ser aérea, marítima o terrestre")
             return false
         }
+
         return true;
     }
 
     function handleSubmit(){
         if(checkFields()){
-            const apiCall = async () => {
-                const response = await fetch('http://localhost:5000/plans/modify', {
+                fetch('http://localhost:8080/plans/modify', {
                   method: 'POST',
-                  body: {"destiny": destiny, "date": date, "modality": modality, "cost": cost, "pictures": pictures},
+                  body: JSON.stringify({"id": id,"destiny": destiny, "date": date, "modality": modality, "cost": cost, "pictures": pictures}),
                   headers: {
                     'Content-Type': 'application/json'
                   }
                 }).then(response => response.status==200?setAlerta(true): null)
-            }
+                .catch(error => setErrorT(error))
         }
     }
     return(
@@ -105,6 +109,7 @@ export const PlansModify = () =>{
                 id="destiny"
                 label="Destino"
                 style={{width: '40vmin'}}
+                value={destiny}
                 onChange={(e)=>setDestiny(e.target.value)}
                 />
                 <TextField
@@ -112,6 +117,7 @@ export const PlansModify = () =>{
                 id="modality"
                 label="Modalidad"
                 style={{width: '40vmin'}}
+                value={modality}
                 onChange={(e)=>setModality(e.target.value)}
                 />
                 <TextField
@@ -119,6 +125,7 @@ export const PlansModify = () =>{
                 id="cost"
                 label="Costo"
                 style={{width: '40vmin'}}
+                value={cost}
                 onChange={(e)=>setCost(e.target.value)}
                 />
                 <LocalizationProvider dateAdapter={AdapterDayjs} >
@@ -135,13 +142,13 @@ export const PlansModify = () =>{
             </div>
 
             <div>
-                <Button variant="outlined" color="success" className="addBtn" style={{top: '5vmin'}} onClick={handleSubmit}>Agregar</Button>            
+                <Button variant="outlined" color="success" className="addBtn" style={{top: '5vmin'}} onClick={handleSubmit}>Modificar</Button>            
 
             </div>
             {/*Manejo de errores FRONT-END*/}
             {console.log(pictures)}
             {errorT!="" ? <Alert severity="error" className="alert">{"Error: " +errorT}</Alert>: ""}
-            {alerta!=false ? <Alert severity="success" className="alert">{"Alta realizada con éxito"}</Alert>: ""}
+            {alerta!=false ? <Alert severity="success" className="alert">{"Modificación realizada con éxito"}</Alert>: ""}
             </Box>
             : <h1>No se encontró el plan</h1>}
 
